@@ -1,38 +1,37 @@
 const createError = require('http-errors');
 const express = require('express');
+const mongoose = require('mongoose');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+require('dotenv').config();
 
+// app init
 const app = express();
 
-require('dotenv').config();
-const port = process.env.PORT || 8000
-
-app.get('/', (req, res) => {
-  res.send('hello from node');
-});
-
-app.listen(port, () => {
-  console.log(`Server is running on ${port}`);
+// db connect
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log('DB Connected');
 })
 
+// Middlewares
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Routes
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+// Routes Import
+const userRouter = require('./routes/user');
 
 // Routes Middlewares
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/api', userRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   next(createError(404));
 });
 
@@ -46,5 +45,10 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+const port = process.env.PORT || 8000
+app.listen(port, () => {
+  console.log(`Server is running on ${port}`);
+})
 
 module.exports = app;
