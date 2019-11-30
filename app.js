@@ -1,8 +1,8 @@
 const createError = require('http-errors');
 const express = require('express');
 const mongoose = require('mongoose');
-const path = require('path');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const logger = require('morgan');
 require('dotenv').config();
 
@@ -19,10 +19,9 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // Middlewares
 app.use(logger('dev'));
-app.use(express.json());
+app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes Import
 const userRouter = require('./routes/user');
