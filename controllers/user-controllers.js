@@ -1,11 +1,11 @@
 const { User } = require('../models/user-document-models');
-const jwt = require('json-web-token');
+const jwt = require('jsonwebtoken');
 const expressJwt = require('express-jwt');
 
 exports.signup = (req, res) => {
   console.log('req.body', req.body);
 
-  const newUser = new User(req.body); // complaining here - 
+  const newUser = new User(req.body);
 
   newUser.save((err, user) => {
     if(err) {
@@ -45,8 +45,8 @@ exports.signin = (req, res) => {
       id: user._id
     }, process.env.JWT_SECRET);
 
-      // persist the token as 't' in cookie
-    res.cookie('t', token, {
+    // persist the token as 'tkn' in cookie
+    res.cookie('tkn', token, {
       expire: new Date() + 9999
     });
 
