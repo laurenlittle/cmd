@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Routes Import
-const userRouter = require('./routes/user');
+const userRouter = require('./routes/user-routes');
 
 // Routes Middlewares
 app.use('/api', userRouter);
