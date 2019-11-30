@@ -16,9 +16,9 @@ const userSchema = new Schema({
     type: String,
     trim: true,
     required: true,
-    unique: 32
+    unique: true
   },
-  hashed_passsword: {
+  hashed_password: {
     type: String,
     required: true,
   },
@@ -38,7 +38,7 @@ userSchema.virtual('password')
   .set(function (password) {
     this._password = password;
     this.salt = uuidv1();
-    this.hashed_passsword = this.encryptPassword(password);
+    this.hashed_password = this.encryptPassword(password);
   })
   .get(function () {
     return this._password;
@@ -46,7 +46,7 @@ userSchema.virtual('password')
 
 // Schema Methods
 userSchema.methods = {
-  encryptPassword: function () {
+  encryptPassword: function (password) {
     if (!password) return '';
     try {
       return crypto.createHmac('sha1', this.salt)
