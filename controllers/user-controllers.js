@@ -69,4 +69,37 @@ exports.signout = (req, res) => {
 exports.requireSignin = expressJwt({
   secret: process.env.JWT_SECRET,
   requestProperty: 'auth'
-})
+});
+
+exports.userById = (req, res, next, id) => {
+
+ User.findById(id).exec((err, user) => {
+
+  if (err || !user) {
+    return res.status(400).json({
+      error: 'User not found'
+     })
+   }
+
+   // add user to request object as profile
+   req.profile = user;
+
+   next();
+
+ });
+};
+
+
+exports.isAuth = (req, res, next) => {
+  //  logged in user and autheticated user must have same ID
+  let user = req.profile && req.auth && req.profile._id == req.auth.id
+
+  if (!user) {
+    return res.status(403).json({
+      error: 'Access Denied Pal.'
+    });
+  }
+
+  next();
+
+};
